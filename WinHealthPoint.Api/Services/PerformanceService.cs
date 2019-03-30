@@ -1,4 +1,7 @@
-﻿using WinHealthPoint.Api.Models;
+﻿using System;
+using System.Diagnostics;
+using System.Threading;
+using WinHealthPoint.Api.Models;
 
 namespace WinHealthPoint.Api.Services
 {
@@ -6,7 +9,15 @@ namespace WinHealthPoint.Api.Services
     {
         public PerformanceDTO GetInfo()
         {
-            throw new System.NotImplementedException();
+            var performanceCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+
+            performanceCounter.NextValue();
+            Thread.Sleep(1000);
+
+            return new PerformanceDTO
+            {
+                CpuUsage = Convert.ToByte(Math.Round(performanceCounter.NextValue(), 0))
+            };
         }
     }
 }
