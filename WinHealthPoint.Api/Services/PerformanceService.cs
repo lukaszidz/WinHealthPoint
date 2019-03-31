@@ -16,8 +16,25 @@ namespace WinHealthPoint.Api.Services
 
             return new PerformanceDTO
             {
-                CpuUsage = Convert.ToByte(Math.Round(performanceCounter.NextValue(), 0))
+                CpuUsage = GetCpuUsage(),
+                MemoryUsage = GetMemoryUsage()
             };
+        }
+
+        private byte GetCpuUsage()
+        {
+            var performanceCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+
+            performanceCounter.NextValue();
+            Thread.Sleep(1000);
+
+            return Convert.ToByte(Math.Round(performanceCounter.NextValue(), 0));
+        }
+
+        private byte GetMemoryUsage()
+        {
+            PerformanceCounter mem = new PerformanceCounter("Memory", "% Committed Bytes In Use");
+            return Convert.ToByte(Math.Round(mem.NextValue(), 0));
         }
     }
 }
